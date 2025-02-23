@@ -37,7 +37,11 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "lms_api.apps.core"
+    "lms_api.apps.core",
+    "lms_api.apps.course",
+    "lms_api.apps.enrollment",
+    "lms_api.apps.notification",
+    "lms_api.apps.payment",
 ]
 
 MIDDLEWARE = [
@@ -128,3 +132,4 @@ STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 AUTH_CORE_USER_MODEL = "core.User"
+COURSE_MODEL = "course.Course"

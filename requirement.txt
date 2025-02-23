@@ -1,0 +1,8 @@
+django>=4.0
+djangorestframework
+django-environ
+drf-yasg
+celery
+redis
+gunicorn
+psycopg2-binary
