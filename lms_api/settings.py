@@ -37,12 +37,25 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    
+    "rest_framework",
+    
     "lms_api.apps.core",
     "lms_api.apps.course",
     "lms_api.apps.enrollment",
     "lms_api.apps.notification",
     "lms_api.apps.payment",
 ]
+
+# REST_FRAMEWORK = {
+#     "DEFAULT_AUTHENTICATION_CLASSES": (
+#         "rest_framework.authentication.SessionAuthentication",
+#         "rest_framework.authentication.TokenAuthentication",
+#     ),
+#     "DEFAULT_PERMISSION_CLASSES": (
+#         "rest_framework.permissions.IsAuthenticated",
+#     ),
+# }
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
