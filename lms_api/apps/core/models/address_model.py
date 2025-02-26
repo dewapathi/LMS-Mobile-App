@@ -1,13 +1,13 @@
 from django.db import models
 from django.conf import settings
 
-import uuid
-
 
 class Address(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    id = models.AutoField(auto_created=True, primary_key=True)
     user = models.OneToOneField(
-        settings.AUTH_CORE_USER_MODEL, on_delete=models.CASCADE, related_name="related_address"
+        settings.AUTH_CORE_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="related_address",
     )
     street = models.CharField(max_length=255)
     city = models.CharField(max_length=100)

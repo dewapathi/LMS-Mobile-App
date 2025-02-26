@@ -1,7 +1,5 @@
 from django.db import models
 
-import uuid
-
 
 class User(models.Model):
     USER_TYPE_STUDENT = "student"
@@ -14,7 +12,7 @@ class User(models.Model):
         (USER_TYPE_ADMIN, "admin"),
     ]
 
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    id = models.AutoField(auto_created=True, primary_key=True)
     username = models.CharField(unique=True, null=False)
     password = models.CharField(max_length=255)
     first_name = models.CharField(max_length=255, null=False)
