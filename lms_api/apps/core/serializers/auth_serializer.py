@@ -60,9 +60,6 @@ class UserSignInSerializer(serializers.Serializer):
         username = data.get("username")
         password = data.get("password")
 
-        print(f"passwordpassword: {password}")
-        print(f"usernameusername: {username}")
-
         try:
             user = User.objects.get(username=username)
             tokens = get_tokens_for_user(user)

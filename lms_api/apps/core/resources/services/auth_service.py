@@ -12,6 +12,7 @@ def get_tokens_for_user(user):
     refresh["is_verified"] = user.is_verified
 
     return {
+        "message": "Login successful.",
         "refresh_token": str(refresh),
         "access_token": str(refresh.access_token),
     }
