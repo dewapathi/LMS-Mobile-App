@@ -47,6 +47,15 @@ INSTALLED_APPS = [
     "lms_api.apps.payment",
 ]
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',  # Require authentication by default
+    ),
+}
+
 # REST_FRAMEWORK = {
 #     "DEFAULT_AUTHENTICATION_CLASSES": (
 #         "rest_framework.authentication.SessionAuthentication",
