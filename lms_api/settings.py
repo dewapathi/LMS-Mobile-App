@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
+from datetime import timedelta
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -26,6 +27,16 @@ SECRET_KEY = "django-insecure-dj-@4wl&wo%^0k38x95kdm=6$wf_rx-&j1q^$b5n*h99-po)#s
 DEBUG = True
 
 ALLOWED_HOSTS = []
+
+BACKEND_URL = "http://127.0.0.1:8000"
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = "studentmanagement2025@gmail.com"  # Use your email
+EMAIL_HOST_PASSWORD = "cctj mqce tqzq hqdi"  # Use the generated app password
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 
 # Application definition
@@ -54,6 +65,11 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',  # Require authentication by default
     ),
+}
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=60),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
 }
 
 # REST_FRAMEWORK = {
