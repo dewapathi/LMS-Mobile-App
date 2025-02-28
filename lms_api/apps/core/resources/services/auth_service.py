@@ -25,11 +25,12 @@ def _generate_verification_token(user):
     refresh = RefreshToken.for_user(user)
     return str(refresh.access_token)
 
+
 def send_verification_email(user):
     token = _generate_verification_token(user)
     verification_url = f"{settings.BACKEND_URL}/api/verify-email/?token={token}"
-    print(f"verification_url: {verification_url}")
     subject = "Verify Your Email Address"
-    message = f"Click the link below to verify your email address:\n\n{verification_url}"
-    send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, ["pradeepa@creatit.com.au"])
-    
+    message = (
+        f"Click the link below to verify your email address:\n\n{verification_url}"
+    )
+    send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [user.email])
