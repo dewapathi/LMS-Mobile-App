@@ -2,6 +2,7 @@ from django.core.mail import send_mail
 from django.conf import settings
 
 from rest_framework_simplejwt.tokens import RefreshToken
+from lms_api.resources.services.email_service import send_lms_email
 
 
 def get_tokens_for_user(user):
@@ -33,4 +34,4 @@ def send_verification_email(user):
     message = (
         f"Click the link below to verify your email address:\n\n{verification_url}"
     )
-    send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [user.email])
+    send_lms_email(subject, message, user.email)
