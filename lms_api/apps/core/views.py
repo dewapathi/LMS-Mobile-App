@@ -5,9 +5,18 @@ from rest_framework import status
 from rest_framework_simplejwt.tokens import AccessToken
 from rest_framework_simplejwt.exceptions import TokenError
 
+from drf_yasg.utils import swagger_auto_schema
+from drf_yasg import openapi
+
 from lms_api.apps.core import serializers, models
+from lms_api.apps.core.docs.swagger_doc import (
+    sign_up_schema,
+    sign_in_schema,
+    verify_email_schema,
+)
 
 
+@sign_up_schema
 @api_view(["POST"])
 @permission_classes([AllowAny])
 def sign_up(request):
@@ -25,6 +34,7 @@ def sign_up(request):
         return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
 
 
+@sign_in_schema
 @api_view(["POST"])
 @permission_classes([AllowAny])
 def sign_in(request):
@@ -38,6 +48,7 @@ def sign_in(request):
         return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
 
 
+@verify_email_schema
 @api_view(["GET"])
 @permission_classes([AllowAny])
 def verify_email(request):
