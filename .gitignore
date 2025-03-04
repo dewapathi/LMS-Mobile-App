@@ -1,2 +1,4 @@
 venv/
 lms_api/settings.py
+*.pyc
+__pycache__/
