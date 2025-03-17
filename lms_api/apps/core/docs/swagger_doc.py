@@ -54,3 +54,50 @@ verify_email_schema = swagger_auto_schema(
     operation_summary="Verify Email",
     operation_description="Verifies a user's email using a token.",
 )
+
+#Forgot password
+forgot_password_schema = swagger_auto_schema(
+    method="post",
+    request_body=serializers.ResetPasswordSerializer,
+    responses={
+        200: openapi.Response(
+            description="Password reset link sent successfully.",
+            examples={
+                "application/json": {"message": "Password reset link sent."}
+            },
+        ),
+        404: openapi.Response(
+            description="User not found.",
+            examples={
+                "application/json": {"error": "User not found."}
+            },
+        ),
+        400: openapi.Response(
+            description="Bad request."
+        ),
+    },
+    operation_summary="Forgot Password",
+    operation_description="Sends a password reset link to the user's registered email address.",
+)
+
+#Reset password
+reset_password_schema = swagger_auto_schema(
+    method="post",
+    request_body=serializers.ResetPasswordSerializer,  # Accepts new_password
+    responses={
+        200: openapi.Response(
+            description="Password reset successful.",
+            examples={
+                "application/json": {"message": "Password reset successful."}
+            },
+        ),
+        400: openapi.Response(
+            description="Invalid token or user.",
+            examples={
+                "application/json": {"error": "Invalid or expired token."}
+            },
+        ),
+    },
+    operation_summary="Reset Password",
+    operation_description="Resets the password for the user using the provided token and UID.",
+)

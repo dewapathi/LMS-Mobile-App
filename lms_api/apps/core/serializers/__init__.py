@@ -1,1 +1,1 @@
-from .auth_serializer import UserSignUpSerializer, UserSignInSerializer, ForgotPasswordSerializer
+from .auth_serializer import UserSignUpSerializer, UserSignInSerializer, ForgotPasswordSerializer, ResetPasswordSerializer

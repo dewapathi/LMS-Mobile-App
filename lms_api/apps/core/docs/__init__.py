@@ -1,1 +1,1 @@
-from .swagger_doc import sign_up_schema, sign_in_schema, verify_email_schema
+from .swagger_doc import sign_up_schema, sign_in_schema, verify_email_schema, forgot_password_schema, reset_password_schema

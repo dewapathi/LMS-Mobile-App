@@ -12,7 +12,7 @@ from lms_api.apps.core import serializers, models
 from lms_api.apps.core.docs.swagger_doc import (
     sign_up_schema,
     sign_in_schema,
-    verify_email_schema,
+    verify_email_schema, forgot_password_schema, reset_password_schema
 )
 from lms_api.apps.core.resources.services import send_password_reset_email,auth_service
 
@@ -80,6 +80,7 @@ def verify_email(request):
         return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
     
 
+@forgot_password_schema
 @api_view(["POST"])
 @permission_classes([AllowAny])
 def forgot_password(request):
@@ -95,23 +96,21 @@ def forgot_password(request):
         except models.User.DoesNotExist:
             return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
 
+@reset_password_schema
 @api_view(["POST"])
 @permission_classes([AllowAny])
 def reset_password(request, uidb64, token):
+    serializer = serializers.ResetPasswordSerializer(data=request.data)
     try:
         uid = force_str(urlsafe_base64_decode(uidb64))
         user = models.User.objects.get(pk=uid)
         
         if auth_service.custom_token_generator.check_token(user, token):
-            new_password = request.data.get("new_password")
-            confirm_password = request.data.get("confirm_password")
-            
-            if not new_password == confirm_password:
-                return Response({"error": "Passwords do not match."}, status=status.HTTP_400_BAD_REQUEST)
-            
-            user.set_password(new_password)
-            user.save()
-            return Response({"message": "Password reset successful."}, status=status.HTTP_200_OK)
+            if serializer.is_valid():
+                new_password = serializer.validated_data["new_password"]
+                user.set_password(new_password)
+                user.save()
+                return Response({"message": "Password reset successful."}, status=status.HTTP_200_OK)
         else:
             return Response({"error": "Invalid token."}, status=status.HTTP_400_BAD_REQUEST)
         

@@ -78,3 +78,12 @@ class ForgotPasswordSerializer(serializers.Serializer):
         if not User.objects.filter(email=value).exists():
             raise serializers.ValidationError("User with this email does not exist.")
         return value
+    
+class ResetPasswordSerializer(serializers.Serializer):
+    new_password = serializers.CharField(max_length=255)
+    confirm_password = serializers.CharField(max_length=255)
+    
+    def validate(self, data):
+        if not data["new_password"] == data["confirm_password"]:
+            raise serializers.ValidationError("Passwords do not match.")
+        return data
