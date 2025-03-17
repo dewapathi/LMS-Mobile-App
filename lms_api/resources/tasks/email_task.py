@@ -6,7 +6,7 @@ from celery import shared_task
 __all__ = ("send_email_task",)
 
 
-@shared_task
+@shared_task(blind=True, autoretry_for=(Exception,), retry_kwargs={"max_retries": 5})
 def send_email_task(subject, message, recipient_email):
     """
     Celery task to send an email asynchronously.

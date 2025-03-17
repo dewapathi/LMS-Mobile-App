@@ -1,3 +1,6 @@
+from django.utils.http import urlsafe_base64_decode
+from django.utils.encoding import force_str
+
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
@@ -5,16 +8,13 @@ from rest_framework import status
 from rest_framework_simplejwt.tokens import AccessToken
 from rest_framework_simplejwt.exceptions import TokenError
 
-from drf_yasg.utils import swagger_auto_schema
-from drf_yasg import openapi
-
 from lms_api.apps.core import serializers, models
 from lms_api.apps.core.docs.swagger_doc import (
     sign_up_schema,
     sign_in_schema,
     verify_email_schema,
 )
-
+from lms_api.apps.core.resources.services import send_password_reset_email,auth_service
 
 @sign_up_schema
 @api_view(["POST"])
@@ -78,3 +78,51 @@ def verify_email(request):
         )
     except models.User.DoesNotExist:
         return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+    
+
+@api_view(["POST"])
+@permission_classes([AllowAny])
+def forgot_password(request):
+    serializer = serializers.ForgotPasswordSerializer(data=request.data)
+    if serializer.is_valid():
+        email = serializer.validated_data["email"]
+        
+        try:
+            user = models.User.objects.get(email=email)
+            send_password_reset_email(user)
+            
+            return Response({"message": "Password reset link has been sent."}, status=status.HTTP_200_OK)
+        except models.User.DoesNotExist:
+            return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+
+@api_view(["POST"])
+@permission_classes([AllowAny])
+def reset_password(request, uidb64, token):
+    try:
+        uid = force_str(urlsafe_base64_decode(uidb64))
+        user = models.User.objects.get(pk=uid)
+        
+        if auth_service.custom_token_generator.check_token(user, token):
+            new_password = request.data.get("new_password")
+            confirm_password = request.data.get("confirm_password")
+            
+            if not new_password == confirm_password:
+                return Response({"error": "Passwords do not match."}, status=status.HTTP_400_BAD_REQUEST)
+            
+            user.set_password(new_password)
+            user.save()
+            return Response({"message": "Password reset successful."}, status=status.HTTP_200_OK)
+        else:
+            return Response({"error": "Invalid token."}, status=status.HTTP_400_BAD_REQUEST)
+        
+    except (TypeError, ValueError, OverflowError, models.User.DoesNotExist):
+        return Response({"error": "Invalid user."}, status=status.HTTP_400_BAD_REQUEST)
+        
+
+        
+        
+        
+        
+        
+        
+        

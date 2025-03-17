@@ -1,4 +1,6 @@
 from django.db import models
+from django.utils import timezone
+from django.contrib.auth.hashers import make_password, check_password
 
 
 class User(models.Model):
@@ -24,9 +26,22 @@ class User(models.Model):
     is_verified = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    last_login = models.DateTimeField(default=timezone.now)
 
     class Meta:
         db_table = "users"
 
     def __str__(self):
         return self.email
+    
+    def set_password(self, raw_password):
+        """
+        Hashes and sets the user's password.
+        """
+        self.password = make_password(raw_password)
+    
+    def check_password(self, raw_password):
+        """
+        Checks if the given raw password matches the hashed password.
+        """
+        return check_password(raw_password, self.password)
