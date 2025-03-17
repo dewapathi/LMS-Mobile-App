@@ -99,13 +99,14 @@ def forgot_password(request):
 @reset_password_schema
 @api_view(["POST"])
 @permission_classes([AllowAny])
-def reset_password(request, uidb64, token):
+def reset_password(request, token):
     serializer = serializers.ResetPasswordSerializer(data=request.data)
     try:
-        uid = force_str(urlsafe_base64_decode(uidb64))
-        user = models.User.objects.get(pk=uid)
+        access_token = AccessToken(token)
+        user_id = access_token["user_id"]
+        user = models.User.objects.get(pk=user_id)
         
-        if auth_service.custom_token_generator.check_token(user, token):
+        if auth_service.jwt_token_generator.check_token(user, token):
             if serializer.is_valid():
                 new_password = serializer.validated_data["new_password"]
                 user.set_password(new_password)

@@ -2,3 +2,4 @@ venv/
 lms_api/settings.py
 *.pyc
 __pycache__/
+cpython-312.pyc

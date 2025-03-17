@@ -1,3 +1,4 @@
+from abc import ABC, abstractmethod
 from django.conf import settings
 from django.utils.http import urlsafe_base64_encode, base36_to_int, int_to_base36
 from django.utils.encoding import force_bytes
@@ -5,13 +6,21 @@ from django.utils.crypto import constant_time_compare
 
 from datetime import datetime
 
-from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
 
 from lms_api.resources.services.email_service import send_lms_email
 from lms_api.apps.users.serializers import UserSerializer
 
 
-class CustomTokenGenerator():
+class BaseTokenGenerator(ABC):
+    @abstractmethod
+    def make_token(self, user):
+        pass
+    
+    @abstractmethod
+    def check_token(self, user):
+        pass
+class CustomTokenGenerator(BaseTokenGenerator):
     def _make_hash_value(self, user, timestamp):
         """
         Generate a hash value for the token using user-specific data.
@@ -51,6 +60,22 @@ class CustomTokenGenerator():
         return True
         
 custom_token_generator = CustomTokenGenerator()
+
+
+class JWTTokenGenerator(BaseTokenGenerator):
+    def make_token(self, user):
+        token = AccessToken.for_user(user)
+        return str(token)
+    
+    def check_token(self, user, token):
+        try:
+            access_token = AccessToken(token)
+            user_id = access_token["user_id"]
+            return user.id == user_id
+        except Exception:
+            return False
+
+jwt_token_generator = JWTTokenGenerator()
 
 def get_tokens_for_user(user):
     """
@@ -98,15 +123,15 @@ def _generate_password_reset_token(user):
     """
     Generate a password reset token using the custom token generator.
     """
-    return custom_token_generator.make_token(user)
+    return jwt_token_generator.make_token(user)
 
 def send_password_reset_email(user):
     """
     Send an email with a password reset link to the user.
     """
     token = _generate_password_reset_token(user)
-    uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
-    reset_link = f"{settings.BACKEND_URL}api/reset-password/{uidb64}/{token}/"
+    # uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
+    reset_link = f"{settings.BACKEND_URL}api/reset-password/{token}/"
     subject = "Reset your password"
     message = f"Click the link below to reset your password:\n\n{reset_link}"
     send_lms_email(subject, message, user.email)

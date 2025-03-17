@@ -9,6 +9,7 @@ urlpatterns = [
     path("sign-in/", sign_in, name="sign-in"),
     path("verify-email/", verify_email, name="verify-email"),
     path("forgot-password/", forgot_password, name="forgot-password"),
-    path("reset-password/<str:uidb64>/<str:token>/", reset_password, name="reset-password"),
+    # path("reset-password/<str:uidb64>/<str:token>/", reset_password, name="reset-password"),
+    path("reset-password/<str:token>/", reset_password, name="reset-password"),
     path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
 ]
