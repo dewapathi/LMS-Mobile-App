@@ -1,5 +1,6 @@
 from django.utils.http import urlsafe_base64_decode
 from django.utils.encoding import force_str
+from django.template.loader import render_to_string
 
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny

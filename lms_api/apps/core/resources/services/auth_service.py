@@ -3,6 +3,7 @@ from django.conf import settings
 from django.utils.http import urlsafe_base64_encode, base36_to_int, int_to_base36
 from django.utils.encoding import force_bytes
 from django.utils.crypto import constant_time_compare
+from django.template.loader import render_to_string
 
 from datetime import datetime
 
@@ -134,5 +135,11 @@ def send_password_reset_email(user):
     reset_link = f"{settings.BACKEND_URL}api/reset-password/{token}/"
     subject = "Reset your password"
     message = f"Click the link below to reset your password:\n\n{reset_link}"
-    send_lms_email(subject, message, user.email)
+    
+    html_message = render_to_string("reset_password_email.html", {
+        "reset_link": reset_link,
+        "site_name": "Lakruwan Management System"  # Add your site name here
+    })
+     
+    send_lms_email(subject, message, user.email, html_message)
     
