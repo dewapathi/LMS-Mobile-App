@@ -1,5 +1,8 @@
-venv/
-lms_api/settings.py
-*.pyc
+# Byte-compiled / optimized / DLL files
 __pycache__/
-cpython-312.pyc
+*.py[cod]
+*.so
+*.cpython-*
+
+# Virtual environment
+venv/
