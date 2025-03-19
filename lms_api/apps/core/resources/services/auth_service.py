@@ -137,8 +137,9 @@ def send_password_reset_email(user):
     message = f"Click the link below to reset your password:\n\n{reset_link}"
     
     html_message = render_to_string("reset_password_email.html", {
+        "first_name": user.first_name,
         "reset_link": reset_link,
-        "site_name": "Lakruwan Management System"  # Add your site name here
+        "site_name": "Lakruwan Management System"
     })
      
     send_lms_email(subject, message, user.email, html_message)
