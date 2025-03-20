@@ -38,7 +38,15 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = "studentmanagement2025@gmail.com"  # Use your email
 EMAIL_HOST_PASSWORD = "cctj mqce tqzq hqdi"  # Use the generated app password
-DEFAULT_FROM_EMAIL = "LMS System <studentmanagement2025@gmail.com>" 
+DEFAULT_FROM_EMAIL = "studentmanagement2025@gmail.com" 
+
+# EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+# EMAIL_HOST = "in-v3.mailjet.com"
+# EMAIL_PORT = 587
+# EMAIL_USE_TLS = False
+# EMAIL_HOST_USER = "8ebc8b29da2db91e1b6737c1d0ac3ac8"  # Use your email
+# EMAIL_HOST_PASSWORD = "97a4561a0a7800b9911d1802cefeb1ca"  # Use the generated app password
+# DEFAULT_FROM_EMAIL = "pradeepa@creatit.com.au" 
 
 CELERY_BROKER_URL = 'redis://localhost:6379/1'
 CELERY_RESULT_BACKEND = 'redis://localhost:6379/1'

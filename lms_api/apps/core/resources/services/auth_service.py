@@ -4,6 +4,7 @@ from django.utils.http import urlsafe_base64_encode, base36_to_int, int_to_base3
 from django.utils.encoding import force_bytes
 from django.utils.crypto import constant_time_compare
 from django.template.loader import render_to_string
+from django.utils.html import strip_tags
 
 from datetime import datetime
 
@@ -113,11 +114,18 @@ def send_verification_email(user):
     """
     token = _generate_verification_token(user)
     verification_url = f"{settings.BACKEND_URL}api/verify-email/?token={token}"
-    subject = "Verify Your Email Address"
+    subject = "Complete Your Registration with Lakruwan Management System"
     message = (
         f"Click the link below to verify your email address:\n\n{verification_url}"
     )
-    send_lms_email(subject, message, user.email)
+    html_message = render_to_string("user_activation_email.html", {
+        "first_name": user.first_name,
+        "activation_link": verification_url,
+        "site_name": "Lakruwan Management System",
+    })
+    
+    plain_message = strip_tags(message)
+    send_lms_email(subject, plain_message, user.email, html_message)
     
 
 def _generate_password_reset_token(user):
@@ -134,8 +142,7 @@ def send_password_reset_email(user):
     # uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
     reset_link = f"{settings.BACKEND_URL}api/reset-password/{token}/"
     subject = "Reset your password"
-    message = f"Click the link below to reset your password:\n\n{reset_link}"
-    
+    message = ""
     html_message = render_to_string("reset_password_email.html", {
         "first_name": user.first_name,
         "reset_link": reset_link,
