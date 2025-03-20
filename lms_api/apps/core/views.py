@@ -78,11 +78,13 @@ def verify_email(request):
             {"message": "Email verified successfully."}, status=status.HTTP_200_OK
         )
 
-    except TokenError:
+    except TokenError as e:
+        capture_exception(e)
         return Response(
             {"error": "Invalid or expired token."}, status=status.HTTP_400_BAD_REQUEST
         )
-    except models.User.DoesNotExist:
+    except models.User.DoesNotExist as e:
+        capture_exception(e)
         return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
     
 
@@ -99,7 +101,8 @@ def forgot_password(request):
             send_password_reset_email(user)
             
             return Response({"message": "Password reset link has been sent."}, status=status.HTTP_200_OK)
-        except models.User.DoesNotExist:
+        except models.User.DoesNotExist as e:
+            capture_exception(e)
             return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
 
 @reset_password_schema
@@ -121,7 +124,8 @@ def reset_password(request, token):
         else:
             return Response({"error": "Invalid token."}, status=status.HTTP_400_BAD_REQUEST)
         
-    except (TypeError, ValueError, OverflowError, models.User.DoesNotExist):
+    except (TypeError, ValueError, OverflowError, models.User.DoesNotExist) as e:
+        capture_exception(e)
         return Response({"error": "Invalid user."}, status=status.HTTP_400_BAD_REQUEST)
         
 
