@@ -11,11 +11,21 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from datetime import timedelta
-import os
 from pathlib import Path
+from sentry_sdk.integrations.django import DjangoIntegration
+
+import sentry_sdk
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+sentry_sdk.init(
+    dsn="https://9255b81cdec79195ebf5c95dc0b5cc82@o4509009645404160.ingest.us.sentry.io/4509009646714880",
+    # Add data like request headers and IP for users,
+    # see https://docs.sentry.io/platforms/python/data-management/data-collected/ for more info
+    send_default_pii=True,
+)
 
 
 # Quick-start development settings - unsuitable for production
@@ -54,8 +64,6 @@ CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"
 CELERY_TIMEZONE = 'UTC'
-
-
 
 # Application definition
 

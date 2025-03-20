@@ -9,6 +9,8 @@ from rest_framework import status
 from rest_framework_simplejwt.tokens import AccessToken
 from rest_framework_simplejwt.exceptions import TokenError
 
+from sentry_sdk import capture_exception
+
 from lms_api.apps.core import serializers, models
 from lms_api.apps.core.docs.swagger_doc import (
     sign_up_schema,
@@ -16,6 +18,7 @@ from lms_api.apps.core.docs.swagger_doc import (
     verify_email_schema, forgot_password_schema, reset_password_schema
 )
 from lms_api.apps.core.resources.services import send_password_reset_email,auth_service
+
 
 @sign_up_schema
 @api_view(["POST"])
@@ -32,6 +35,7 @@ def sign_up(request):
             status=status.HTTP_201_CREATED,
         )
     except Exception as e:
+        capture_exception(e)
         return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -46,6 +50,7 @@ def sign_in(request):
         return Response(serializer.validated_data, status=status.HTTP_200_OK)
 
     except Exception as e:
+        capture_exception(e)
         return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
 
 
