@@ -39,6 +39,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+API_KEY = "123"
+
 BACKEND_URL = "http://127.0.0.1:8000/"
 PASSWORD_RESET_TIMEOUT = 86400  # 24 hours in seconds
 
@@ -117,6 +119,9 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    
+    # Custom middleware here
+    "lms_api.apps.core.auth.middleware.APIKeyMiddleware"
 ]
 
 ROOT_URLCONF = "lms_api.urls"
