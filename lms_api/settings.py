@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from datetime import timedelta
 from pathlib import Path
 from sentry_sdk.integrations.django import DjangoIntegration
+from decouple import config
 
 import sentry_sdk
 import os
@@ -121,7 +122,8 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     
     # Custom middleware here
-    "lms_api.apps.core.auth.middleware.APIKeyMiddleware"
+    "lms_api.apps.core.auth.middleware.APIKeyMiddleware",
+    "lms_api.apps.core.auth.middleware.APILoggingMiddleware",
 ]
 
 ROOT_URLCONF = "lms_api.urls"
@@ -150,17 +152,17 @@ WSGI_APPLICATION = "lms_api.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+# Database
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "lms_db",
-        "USER": "lms_user",
-        "PASSWORD": "1997",
-        "HOST": "localhost",
-        "PORT": "5432",
+        "NAME": config("DB_NAME"),
+        "USER": config("DB_USER"),
+        "PASSWORD": config("DB_PASSWORD"),
+        "HOST": config("DB_HOST"),
+        "PORT": config("DB_PORT"),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -203,5 +205,5 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-AUTH_CORE_USER_MODEL = "core.User"
+AUTH_USER_MODEL = 'core.User'
 COURSE_MODEL = "course.Course"

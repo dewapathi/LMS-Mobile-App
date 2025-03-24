@@ -32,3 +32,45 @@ class APIKeyMiddleware:
 
         # Continue processing the request
         return self.get_response(request)
+
+
+class APILoggingMiddleware(MiddlewareMixin):
+    """
+    Middleware to log API requests and responses.
+    """
+    def process_request(self, request):
+        try:
+            # Decode the request body (if present)
+            request_body = request.body.decode("utf-8")
+            if 'application/json' in request.META.get('CONTENT_TYPE', ''):
+                request_body = json.loads(request_body)
+        except Exception as e:
+            request_body = f"Could not decode: {e}"
+
+        # Log the request details
+        request_logger.info({
+            "event": "request",
+            "method": request.method,
+            "path": request.get_full_path(),
+            "headers": {k: v for k, v in request.META.items() if k.startswith('HTTP_') or k.startswith('USER') or k.startswith('LOGNAME') or k.startswith('REMOTE_ADDR') },
+            "body": request_body,
+        })
+
+    def process_response(self, request, response):
+        try:
+            # Decode the response content (if applicable)
+            response_content = response.content.decode("utf-8")
+            if "application/json" in response.get('Content-Type', ''):
+                response_content = json.loads(response_content)
+        except Exception as e:
+            response_content = f"Could not decode: {e}"
+
+        # Log the response details
+        response_logger.info({
+            "event": "response",
+            "status_code": response.status_code,
+            "path": request.get_full_path(),
+            "headers": {k: v for k, v in request.META.items() if k.startswith('HTTP_') or k.startswith('USER') or k.startswith('LOGNAME') or k.startswith('REMOTE_ADDR') },
+            "response": response_content,
+        })
+        return response

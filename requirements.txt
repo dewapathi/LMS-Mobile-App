@@ -8,3 +8,5 @@ gunicorn
 psycopg2-binary
 djangorestframework-simplejwt
 sentry-sdk
+python-decouple
+Pillow>=9.0
