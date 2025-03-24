@@ -5,7 +5,7 @@ from django.conf import settings
 class Address(models.Model):
     id = models.AutoField(auto_created=True, primary_key=True)
     user = models.OneToOneField(
-        settings.AUTH_CORE_USER_MODEL,
+        settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="related_address",
     )

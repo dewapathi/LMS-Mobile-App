@@ -5,7 +5,7 @@ from django.conf import settings
 class Enrollment(models.Model):
     id = models.AutoField(auto_created=True, primary_key=True)
     student = models.ForeignKey(
-        settings.AUTH_CORE_USER_MODEL,
+        settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
         related_name="enrollments",
     )
