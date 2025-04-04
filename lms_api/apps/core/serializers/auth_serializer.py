@@ -26,7 +26,7 @@ class UserSignUpSerializer(serializers.Serializer):
     email = serializers.EmailField()
     role = serializers.CharField()
 
-    address = CreateAddressSerializer(write_only=True)
+    address = CreateAddressSerializer(write_only=True, required=False)
 
     def validate(self, data):
         """Ensure the email is unique"""
@@ -70,19 +70,21 @@ class UserSignInSerializer(serializers.Serializer):
             raise serializers.ValidationError("Invalid username or password.")
 
         return tokens
-    
+
+
 class ForgotPasswordSerializer(serializers.Serializer):
     email = serializers.EmailField()
-    
+
     def validate_email(self, value):
         if not User.objects.filter(email=value).exists():
             raise serializers.ValidationError("User with this email does not exist.")
         return value
-    
+
+
 class ResetPasswordSerializer(serializers.Serializer):
     new_password = serializers.CharField(max_length=255)
     confirm_password = serializers.CharField(max_length=255)
-    
+
     def validate(self, data):
         if not data["new_password"] == data["confirm_password"]:
             raise serializers.ValidationError("Passwords do not match.")
