@@ -11,7 +11,7 @@ from datetime import datetime
 from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
 
 from lms_api.resources.services.email_service import send_lms_email
-from lms_api.apps.users.serializers import UserSerializer
+from lms_api.apps.user.serializers import UserSerializer
 
 
 class BaseTokenGenerator(ABC):

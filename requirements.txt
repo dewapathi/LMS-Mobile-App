@@ -10,3 +10,4 @@ djangorestframework-simplejwt
 sentry-sdk
 python-decouple
 Pillow>=9.0
+django-cors-headers

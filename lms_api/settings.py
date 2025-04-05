@@ -38,7 +38,24 @@ SECRET_KEY = "django-insecure-dj-@4wl&wo%^0k38x95kdm=6$wf_rx-&j1q^$b5n*h99-po)#s
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_HEADERS = [
+    "x-api-key",  # Add your custom header
+    "content-type",
+    "authorization",
+]
+CORS_ALLOW_METHODS = [
+    "DELETE",
+    "GET",
+    "OPTIONS",
+    "PATCH",
+    "POST",
+    "PUT",
+]
+
+# ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '192.168.1.45']
+ALLOWED_HOSTS = ["127.0.0.1", "localhost", "172.20.10.5", "192.168.8.101"]
 
 API_KEY = "123"
 
@@ -51,7 +68,7 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = "studentmanagement2025@gmail.com"  # Use your email
 EMAIL_HOST_PASSWORD = "cctj mqce tqzq hqdi"  # Use the generated app password
-DEFAULT_FROM_EMAIL = "studentmanagement2025@gmail.com" 
+DEFAULT_FROM_EMAIL = "studentmanagement2025@gmail.com"
 
 # EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
 # EMAIL_HOST = "in-v3.mailjet.com"
@@ -59,14 +76,14 @@ DEFAULT_FROM_EMAIL = "studentmanagement2025@gmail.com"
 # EMAIL_USE_TLS = False
 # EMAIL_HOST_USER = "8ebc8b29da2db91e1b6737c1d0ac3ac8"  # Use your email
 # EMAIL_HOST_PASSWORD = "97a4561a0a7800b9911d1802cefeb1ca"  # Use the generated app password
-# DEFAULT_FROM_EMAIL = "pradeepa@creatit.com.au" 
+# DEFAULT_FROM_EMAIL = "pradeepa@creatit.com.au"
 
-CELERY_BROKER_URL = 'redis://localhost:6379/1'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379/1'
+CELERY_BROKER_URL = "redis://localhost:6379/1"
+CELERY_RESULT_BACKEND = "redis://localhost:6379/1"
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"
-CELERY_TIMEZONE = 'UTC'
+CELERY_TIMEZONE = "UTC"
 
 # Application definition
 
@@ -80,12 +97,14 @@ INSTALLED_APPS = [
     
     "rest_framework",
     "drf_yasg",
+    "corsheaders",
     
     "lms_api.apps.core",
     "lms_api.apps.course",
     "lms_api.apps.enrollment",
     "lms_api.apps.notification",
     "lms_api.apps.payment",
+    "lms_api.apps.user",
 ]
 
 REST_FRAMEWORK = {
@@ -116,6 +135,7 @@ SIMPLE_JWT = {
 # }
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -123,7 +143,6 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    
     # Custom middleware here
     "lms_api.apps.core.auth.middleware.APIKeyMiddleware",
     "lms_api.apps.core.auth.middleware.APILoggingMiddleware",
@@ -134,7 +153,7 @@ ROOT_URLCONF = "lms_api.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        'DIRS': [
+        "DIRS": [
             BASE_DIR / "lms_api/resources/email_templates",  # Add this line
         ],
         "APP_DIRS": True,
@@ -208,5 +227,5 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-AUTH_USER_MODEL = 'core.User'
+AUTH_USER_MODEL = "core.User"
 COURSE_MODEL = "course.Course"

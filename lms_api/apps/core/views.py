@@ -34,7 +34,7 @@ def sign_up(request):
             serializer.data,
             status=status.HTTP_201_CREATED,
         )
-    except Exception as e:
+    except ValueError as e:
         return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -42,10 +42,13 @@ def sign_up(request):
 @api_view(["POST"])
 @permission_classes([AllowAny])
 def sign_in(request):
-    serializer = serializers.UserSignInSerializer(data=request.data)
-    serializer.is_valid(raise_exception=True)
+    try:
+        serializer = serializers.UserSignInSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
 
-    return Response(serializer.validated_data, status=status.HTTP_200_OK)
+        return Response(serializer.validated_data, status=status.HTTP_200_OK)
+    except ValueError as e:
+        return Response(str(e), status=status.HTTP_400_BAD_REQUEST)
 
 
 @verify_email_schema

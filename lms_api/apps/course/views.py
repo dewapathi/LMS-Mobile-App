@@ -13,3 +13,11 @@ class CourseViewSet(viewsets.ModelViewSet):
     
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+class CourseCategoryViewSet(viewsets.ModelViewSet):
+    serializer_class = serializers.CourseCategorySerializer
+    permission_classes = [IsAuthenticated]
+    queryset = models.CourseCategory.objects.all()
+    
+    def get_queryset(self):
+        return self.queryset

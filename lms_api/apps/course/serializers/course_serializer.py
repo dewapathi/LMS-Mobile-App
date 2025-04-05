@@ -7,3 +7,8 @@ class CourseSerializer(serializers.ModelSerializer):
         model = models.Course
         fields = "__all__"
         read_only_fields = ["user", "created_at", "updated_at"]
+
+class CourseCategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.CourseCategory
+        fields = "__all__"
