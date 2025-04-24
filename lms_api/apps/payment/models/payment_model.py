@@ -13,13 +13,18 @@ class Payment(models.Model):
         (STATUS_TYPE_FAILED, "Failed"),
     ]
     id = models.AutoField(auto_created=True, primary_key=True)
-    student = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="payments"
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="user_payments",
+        null=True,
+        blank=True,
     )
     course = models.ForeignKey(
-        settings.COURSE_MODEL, on_delete=models.CASCADE, related_name="payments"
+        settings.COURSE_MODEL, on_delete=models.CASCADE, related_name="course_payments"
     )
     amount = models.DecimalField(max_digits=10, decimal_places=2)
+    transaction_id = models.CharField(max_length=255, null=True, blank=True)
     status = models.CharField(
         max_length=20, choices=STATUS_TYPE, default=STATUS_TYPE_PENDING
     )
@@ -30,4 +35,4 @@ class Payment(models.Model):
         db_table = "payments"
 
     def __str__(self):
-        return f"{self.student.email} - {self.course.title} - {self.status}"
+        return f"{self.user.email} - {self.course.title} - {self.status}"

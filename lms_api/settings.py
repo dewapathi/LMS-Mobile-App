@@ -85,6 +85,14 @@ CELERY_TASK_SERIALIZER = "json"
 CELERY_RESULT_SERIALIZER = "json"
 CELERY_TIMEZONE = "UTC"
 
+STRIPE_SECRET_KEY = config("STRIPE_SECRET_KEY")
+STRIPE_PUBLIC_KEY = config("STRIPE_PUBLIC_KEY")
+STRIPE_WEBHOOK_SECRET = config("STRIPE_WEBHOOK_SECRET")
+
+CSRF_TRUSTED_ORIGINS = [
+    "http://localhost:8000"
+]
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -94,11 +102,9 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    
     "rest_framework",
     "drf_yasg",
     "corsheaders",
-    
     "lms_api.apps.core",
     "lms_api.apps.course",
     "lms_api.apps.enrollment",
@@ -139,6 +145,7 @@ MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
+    "lms_api.apps.core.auth.middleware.DisableCSRFMiddlewareForStripe",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
