@@ -6,7 +6,6 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
-import stripe.error
 
 from lms_api.apps.course import models
 from lms_api.apps.payment import models as payment_models
@@ -35,30 +34,35 @@ def create_payment_intent(request):
             name=request.user.first_name, email=request.user.email
         )
 
-        intent = stripe.PaymentIntent.create(
-            amount=amount_in_cents,
-            currency="usd",
-            customer=customer.id,
-            automatic_payment_methods={  # disables auto methods
-                "enabled": False
-            },
-            payment_method_types=["card"],
-            metadata={"user_id": request.user.id, "course_id": course.id},
-        )
+        try:
+            intent = stripe.PaymentIntent.create(
+                amount=amount_in_cents,
+                currency="usd",
+                customer=customer.id,
+                automatic_payment_methods={  # disables auto methods
+                    "enabled": False
+                },
+                payment_method_types=["card"],
+                metadata={"user_id": request.user.id, "course_id": course.id},
+            )
 
-        payment_models.Payment.objects.create(
-            user=request.user,
-            course=course,
-            amount=course.price,
-            transaction_id=intent["id"],
-            status="PENDING",
-        )
+            payment_models.Payment.objects.create(
+                user=request.user,
+                course=course,
+                amount=course.price,
+                transaction_id=intent["id"],
+                status="PENDING",
+            )
 
-        return Response(
-            {"client_secret": intent["client_secret"]}, status=status.HTTP_200_OK
-        )
+            return Response(
+                {"client_secret": intent["client_secret"]}, status=status.HTTP_200_OK
+            )
+
+        except stripe.error.Stripe as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
     except models.Course.DoesNotExist:
         return Response("Course not found!", status=status.HTTP_404_NOT_FOUND)
+
 
 @csrf_exempt
 def stripe_webhook(request):
@@ -80,10 +84,23 @@ def stripe_webhook(request):
         intent = event["data"]["object"]
         transaction_id = intent["id"]
 
-        payment = payment_models.Payment.objects.filter(transaction_id=transaction_id).first()
-        print(f"payment: {payment}")
+        payment = payment_models.Payment.objects.filter(
+            transaction_id=transaction_id
+        ).first()
         if payment:
             payment.status = "COMPLETED"
+            payment.save()
+
+    elif event["type"] == "payment_intent.payment_failed":
+        intent = event["data"]["object"]
+        transaction_id = intent["id"]
+        failure_reason = intent.last_payment_error.message if intent.last_payment_error else "Unknown error"
+
+        payment_models.Payment.objects.filter(transaction_id=transaction_id).first()
+
+        if payment:
+            payment.status = "FAILED"
+            payment.failure_reason = failure_reason
             payment.save()
 
     return HttpResponse(status=200)

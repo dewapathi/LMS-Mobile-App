@@ -1,4 +1,4 @@
-django>=4.0
+django==4.2.7
 djangorestframework
 django-environ
 drf-yasg
