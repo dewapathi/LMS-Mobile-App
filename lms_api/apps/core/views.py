@@ -121,7 +121,7 @@ def reset_password(request, token):
                 user.set_password(new_password)
                 user.save()
                 return Response(
-                    {"message": "Password reset successful."}, status=status.HTTP_200_OK
+                    {"message": "Password reset successfull."}, status=status.HTTP_200_OK
                 )
         else:
             return Response(

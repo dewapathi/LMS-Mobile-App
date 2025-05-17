@@ -69,6 +69,11 @@ class UserSignInSerializer(serializers.Serializer):
         if not check_password(password, user.password):
             raise serializers.ValidationError("Invalid username or password.")
 
+        if not user.is_verified:
+            raise serializers.ValidationError(
+                "Your account is not activated. Please check your email to verify your account."
+            )
+
         return tokens
 
 

@@ -55,7 +55,7 @@ CORS_ALLOW_METHODS = [
 ]
 
 # ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '192.168.1.45']
-ALLOWED_HOSTS = ["127.0.0.1", "localhost", "172.20.10.5", "192.168.8.101"]
+ALLOWED_HOSTS = ["127.0.0.1", "localhost", "172.20.10.5", "192.168.8.101", "192.168.8.105"]
 
 API_KEY = "123"
 
