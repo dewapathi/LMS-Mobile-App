@@ -57,3 +57,6 @@ celery -A lms_api worker --loglevel=info --pool=solo
 python manage.py runserver 0.0.0.0:8000
 python manage.py runserver
 
+//Mac
+venv activate - source venv/bin/activate
+

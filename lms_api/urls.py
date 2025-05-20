@@ -17,6 +17,7 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path, include, re_path
+from django.conf import settings
 
 from rest_framework import permissions
 
@@ -25,7 +26,9 @@ from drf_yasg import openapi
 
 from . import api_urls
 
-#Configure swagger
+import debug_toolbar
+
+# Configure swagger
 schema_view = get_schema_view(
     openapi.Info(
         title="LMS API",
@@ -36,19 +39,27 @@ schema_view = get_schema_view(
         license=openapi.License(name="MIT License"),
     ),
     public=True,
-    permission_classes=[permissions.AllowAny]
+    permission_classes=[permissions.AllowAny],
 )
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/", include(api_urls)),
-    
     # Swagger UI
-    path("swagger/", schema_view.with_ui("swagger", cache_timeout=0), name="schema-swagger-ui"),
-
+    path(
+        "swagger/",
+        schema_view.with_ui("swagger", cache_timeout=0),
+        name="schema-swagger-ui",
+    ),
     # ReDoc UI (alternative)
     path("redoc/", schema_view.with_ui("redoc", cache_timeout=0), name="schema-redoc"),
-
     # JSON/YAML schema for API clients
-    re_path(r"^swagger(?P<format>\.json|\.yaml)$", schema_view.without_ui(cache_timeout=0), name="schema-json"),
+    re_path(
+        r"^swagger(?P<format>\.json|\.yaml)$",
+        schema_view.without_ui(cache_timeout=0),
+        name="schema-json",
+    ),
 ]
+
+if settings.DEBUG:
+    urlpatterns += [path("__debug__/", include(debug_toolbar.urls))]

@@ -55,7 +55,18 @@ CORS_ALLOW_METHODS = [
 ]
 
 # ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '192.168.1.45']
-ALLOWED_HOSTS = ["127.0.0.1", "localhost", "172.20.10.5", "192.168.8.101", "192.168.8.105"]
+ALLOWED_HOSTS = [
+    "127.0.0.1",
+    "localhost",
+    "172.20.10.5",
+    "192.168.8.101",
+    "192.168.8.105",
+]
+
+INTERNAL_IPS = [
+    '127.0.0.1',
+    'localhost',
+]
 
 API_KEY = "123"
 
@@ -89,9 +100,7 @@ STRIPE_SECRET_KEY = config("STRIPE_SECRET_KEY")
 STRIPE_PUBLIC_KEY = config("STRIPE_PUBLIC_KEY")
 STRIPE_WEBHOOK_SECRET = config("STRIPE_WEBHOOK_SECRET")
 
-CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:8000"
-]
+CSRF_TRUSTED_ORIGINS = ["http://localhost:8000"]
 
 # Application definition
 
@@ -105,6 +114,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "drf_yasg",
     "corsheaders",
+    "debug_toolbar",
     "lms_api.apps.core",
     "lms_api.apps.course",
     "lms_api.apps.enrollment",
@@ -143,6 +153,7 @@ SIMPLE_JWT = {
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
+    "debug_toolbar.middleware.DebugToolbarMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "lms_api.apps.core.auth.middleware.DisableCSRFMiddlewareForStripe",

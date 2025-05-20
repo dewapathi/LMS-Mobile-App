@@ -12,3 +12,4 @@ python-decouple
 Pillow>=9.0
 django-cors-headers
 stripe>=8.0
+django-debug-toolbar
