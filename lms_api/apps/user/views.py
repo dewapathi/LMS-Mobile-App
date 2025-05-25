@@ -37,7 +37,7 @@ class AdminUserViewSet(viewsets.ModelViewSet):
     serializer_class = UserSerializer
     permission_classes = [IsAdminRole]
     queryset = apps.get_model(settings.AUTH_USER_MODEL).objects.filter(is_verified=True)
-    http_method_names = ["get", "delete", "post"]
+    http_method_names = ["get", "delete", "post", "put"]
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -50,3 +50,18 @@ class AdminUserViewSet(viewsets.ModelViewSet):
 
         response_serializer = self.get_serializer(user)
         return Response(response_serializer.data, status=status.HTTP_201_CREATED)
+
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop("partial", False)
+        instance = self.get_object()
+        serializer = self.serializer_class(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        validated_data = serializer.validated_data
+
+        user = serializer.save()
+        if "password" in validated_data:
+            user.set_password(validated_data["password"])
+            user.save()
+
+        response_serializer = self.get_serializer(user)
+        return Response(response_serializer.data, status=status.HTTP_200_OK)
